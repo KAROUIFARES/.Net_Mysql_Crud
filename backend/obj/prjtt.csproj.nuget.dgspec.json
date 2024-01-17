@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj": {}
+    "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj": {}
   },
   "projects": {
-    "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj": {
+    "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj",
+        "projectUniqueName": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj",
         "projectName": "prjtt",
-        "projectPath": "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj",
+        "projectPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj",
         "packagesPath": "C:\\Users\\fares\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\obj\\",
+        "outputPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "c:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\NuGet.Config",
+          "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\NuGet.Config",
           "C:\\Users\\fares\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [

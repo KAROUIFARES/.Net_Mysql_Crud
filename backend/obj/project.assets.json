@@ -2292,14 +2292,14 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj",
+      "projectUniqueName": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj",
       "projectName": "prjtt",
-      "projectPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\prjtt.csproj",
+      "projectPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\prjtt.csproj",
       "packagesPath": "C:\\Users\\fares\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\obj\\",
+      "outputPath": "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\NuGet.Config",
+        "C:\\Users\\fares\\OneDrive\\Bureau\\prjtt\\backend\\NuGet.Config",
         "C:\\Users\\fares\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [

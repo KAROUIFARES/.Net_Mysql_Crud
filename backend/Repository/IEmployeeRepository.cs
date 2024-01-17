@@ -10,6 +10,6 @@ namespace repositorie
         Task<IActionResult> InsertEmployeeDataAsync(CreateEmployeeDto employee);
         Task<Employee> GetEmployeeAsync(int id);
         Task<IActionResult> UpdateEmployeeAsync(int id, UpdateEmployeeDto employee);
-        Task DeleteEmployeeAsync(int id);
+        Task<IActionResult> DeleteEmployeeAsync(int id);
     }
 }

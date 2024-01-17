@@ -26,10 +26,7 @@ namespace Repositories
 
         }
 
-        public Task DeleteEmployeeAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public async Task<Employee?> GetEmployeeAsync(int id)
         {
@@ -116,8 +113,6 @@ namespace Repositories
             try
             {
                 string query = "UPDATE " + DbName + "." + TableName + " SET " + EmployeeName + " = @EmployeeName, " + Salary + " = @Salary WHERE " + EmployeeId + " = @DepartementId";
-                string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
-
                 using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
                 {
                     await mycon.OpenAsync();
@@ -143,7 +138,34 @@ namespace Repositories
                 return new BadRequestObjectResult(ex.Message);
             }
         }
-
+        public async Task<IActionResult> DeleteEmployeeAsync(int id)
+        {
+            try
+            {
+                string query = "DELETE FROM " + DbName + "." + TableName + " WHERE " + EmployeeId + " = @DepartmentId";
+                using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+                {
+                    mycon.Open();
+                    using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                    {
+                        myCommand.Parameters.AddWithValue("@DepartmentId", id);
+                        var affectedRows = myCommand.ExecuteNonQuery();
+                        if (affectedRows > 0)
+                        {
+                            return new NoContentResult();
+                        }
+                        else
+                        {
+                            return new NotFoundResult();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
 
 
     }

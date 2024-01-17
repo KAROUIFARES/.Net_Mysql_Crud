@@ -1,22 +1,29 @@
+using System.Runtime.CompilerServices;
 using Dto;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Models;
 using MySql.Data.MySqlClient;
 using repositorie;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
+        private static readonly string DbName = "Test";
+        private static readonly string TableName = "employees";
+        private static readonly string EmployeeId = "EmployeeId";
+        private static readonly string EmployeeName = "EmployeeName";
+        private static readonly string DepartementName = "DepartementName";
+        private static readonly string Salary = "Salary";
+        private string sqlDataSource;
         private readonly IConfiguration configuration;
 
         public EmployeeRepository(IConfiguration configuration)
         {
             this.configuration = configuration;
+            sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
+
         }
 
         public Task DeleteEmployeeAsync(int id)
@@ -24,47 +31,119 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Employee> GetAllEmployeeAsync(int id)
+        public async Task<Employee?> GetEmployeeAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> GetEmployeeAsync()
-        {
-            string query = "SELECT DepartementId, EmployeeName, Salary, DepartementName FROM Test.Departement";
-            List<EmployeeDto> employees = new List<EmployeeDto>();
-            string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
-            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            string query = "SELECT * From " + DbName + "." + TableName + " WHERE EmployeeId=@EmployeeId";
+            Employee emp = new Employee();
+            using (MySqlConnection connection = new MySqlConnection(sqlDataSource))
             {
-                await mycon.OpenAsync();
-                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                await connection.OpenAsync();
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    using (MySqlDataReader myReader = (MySqlDataReader)await myCommand.ExecuteReaderAsync())
+                    command.Parameters.AddWithValue("@EmployeeId", id);
+                    using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
                     {
-                        while (await myReader.ReadAsync())
+                        if (await reader.ReadAsync())
+                        {
+                            emp.EmployeeId = Convert.ToInt32(reader["EmployeeId"]);
+                            emp.EmployeeName = reader["EmployeeName"].ToString();
+                            emp.DepartmenetName = reader["DepartementName"].ToString();
+                            emp.Salary = Convert.ToInt32(reader["Salary"]);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return emp;
+        }
+        public async Task<List<EmployeeDto>> GetAllEmployeeAsync()
+        {
+            string query = "SELECT " + EmployeeId + "," + EmployeeName + "," + Salary + "," + DepartementName + " FROM " + DbName + "." + TableName;
+            List<EmployeeDto> employees = new List<EmployeeDto>();
+            using (MySqlConnection connection = new MySqlConnection(sqlDataSource))
+            {
+                await connection.OpenAsync();
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
                         {
                             employees.Add(new EmployeeDto
                             {
-                                EmployeeId = Convert.ToInt32(myReader["DepartementId"]),
-                                EmployeeName = myReader["EmployeeName"].ToString(),
-                                Salary = Convert.ToInt32(myReader["Salary"]),
-                                DepartmentName = myReader["DepartementName"].ToString()
+                                EmployeeId = Convert.ToInt32(reader[EmployeeId]),
+                                EmployeeName = reader[EmployeeName].ToString(),
+                                Salary = Convert.ToInt32(reader[Salary]),
+                                DepartmentName = reader[DepartementName].ToString()
                             });
                         }
                     }
                 }
             }
-            return new OkObjectResult(employees);
+            return employees;
         }
-        public Task InsertEmployeAsync(Employee employee)
+        public async Task<IActionResult> InsertEmployeeDataAsync(CreateEmployeeDto employee)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
+                string query = "INSERT INTO " + TableName + " (" + EmployeeName + ", " + DepartementName + ", " + Salary + ") VALUES (@EmployeeName, @DepartementName, @Salary)";
+                using (MySqlConnection connection = new MySqlConnection(sqlDataSource))
+                {
+                    await connection.OpenAsync();
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@EmployeeName", employee.EmployeeName);
+                        command.Parameters.AddWithValue("@DepartementName", employee.DepartmentName);
+                        command.Parameters.AddWithValue("@Salary", employee.Salary);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
         }
 
-        public Task UpdateEmployeeAsync(Employee employee)
+
+        public async Task<IActionResult> UpdateEmployeeAsync(int id, UpdateEmployeeDto employee)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string query = "UPDATE " + DbName + "." + TableName + " SET " + EmployeeName + " = @EmployeeName, " + Salary + " = @Salary WHERE " + EmployeeId + " = @DepartementId";
+                string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
+
+                using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+                {
+                    await mycon.OpenAsync();
+                    using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                    {
+                        myCommand.Parameters.AddWithValue("@DepartementId", id);
+                        myCommand.Parameters.AddWithValue("@EmployeeName", employee.EmployeeName);
+                        myCommand.Parameters.AddWithValue("@Salary", employee.Salary);
+                        var affectedRows = await myCommand.ExecuteNonQueryAsync();
+                        if (affectedRows > 0)
+                        {
+                            return new NoContentResult();
+                        }
+                        else
+                        {
+                            return new NotFoundResult();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
         }
+
 
 
     }
